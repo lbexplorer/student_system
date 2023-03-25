@@ -44,6 +44,7 @@ class Student:
         :param id: 学生的id
         :return: 学生对象，如果找不到则返回None
         """
+        cls.students = load_students()
         for student in cls.students:
             if student.id == id:
                 return student
@@ -72,15 +73,10 @@ def save_students(students):
 
 
 def load_students():
-    students=[]
-    try:
-        with open('students.txt', 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-            for line in lines:
-                temp = line.strip().split(',')  # 此时temp为 [id,name]
-                print(temp[0])
-                print(temp[1])# 再将列表转换为类中的数据形式
-                students.append(Student(temp[0],temp[1]))
-    except FileNotFoundError:
-        students = []
-    return students
+        try:
+            with open('students.txt', 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                students = [Student(*line.strip().split(',')) for line in lines]
+        except FileNotFoundError:
+            students = []
+        return students

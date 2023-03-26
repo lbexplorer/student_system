@@ -1,9 +1,3 @@
-import json
-import os
-import pickle
-
-
-
 class Student:
     students = []
 
@@ -18,9 +12,16 @@ class Student:
         :param id: 学生的id
         :param name: 学生的姓名
         """
-        student = cls(id, name)
-        cls.students.append(student)
-        save_students(cls.students)
+        try:
+            student = cls(id, name)
+            if Student.find_student(id) == None:
+                cls.students.append(student)
+                save_students(cls.students)
+                print("添加成功")
+            else:
+                print("已经有此人，无须添加")
+        except:
+            print("error")
 
     @classmethod
     def delete_student(cls, id):
@@ -67,16 +68,16 @@ class Student:
 
 
 def save_students(students):
-    with open('students.txt', 'w', encoding='utf-8') as f:
+    with open('students.txt', 'a', encoding='utf-8') as f:
         for student in students:
             f.write(f'{student.id},{student.name}\n')
 
 
 def load_students():
-        try:
-            with open('students.txt', 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-                students = [Student(*line.strip().split(',')) for line in lines]
-        except FileNotFoundError:
-            students = []
-        return students
+    try:
+        with open('students.txt', 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            students = [Student(*line.strip().split(',')) for line in lines]
+    except FileNotFoundError:
+        students = []
+    return students
